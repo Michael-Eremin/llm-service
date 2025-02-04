@@ -37,32 +37,3 @@ public class LLMController {
 
 }
 
-
-//    private final LLMService llmService;
-////    private final AnswerRepository answerRepository;
-//
-//    public LLMController(
-//            LLMService llmService
-////            ,
-////            AnswerRepository answerRepository
-//    ) {
-//        this.llmService = llmService;
-////        this.answerRepository = answerRepository;
-//
-//    }
-//
-//    @Operation(summary = "Get completion from LLM")
-//    @PostMapping("/completion")
-//    public AnswerEntity getCompletion(@RequestBody String question){
-//
-//        String response = llmService.askQuestion(question);
-//
-//        AnswerEntity answer = new AnswerEntity();
-//        answer.setQuestion(question);
-//        answer.setResponse(response);
-//
-////        return answerRepository.save(answer);
-//        return answer;
-//    }
-
-//}

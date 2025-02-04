@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class LLMServiceImpl implements LLMService {
     private final ChatClient chatClient;
     @Value("${feature.save-to-mongodb-enabled}")
-    private boolean savetoMongodbEnabled;
+    private boolean saveToMongodbEnabled;
     private final Logger LOGGER = LoggerFactory.getLogger("LLMService");
 
 
@@ -26,7 +26,7 @@ public class LLMServiceImpl implements LLMService {
                 .user(question)
                 .call()
                 .content();
-        if (savetoMongodbEnabled) {
+        if (saveToMongodbEnabled) {
             saveArchive(question, response);
         }
 

@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class LLMChatModel implements ChatModel {
@@ -130,7 +132,11 @@ public class LLMChatModel implements ChatModel {
 
     private ChatResponse toChatResponse(LLMChatResponse response) {
         String answer = response.getChoices().get(0).getMessage().getContent();
-        AssistantMessage assistantMessage = new AssistantMessage(answer);
+        Map<String, Object> properties = new HashMap<>();
+        Integer tokens = response.getUsage().getTotal_tokens();
+        properties.put("tokens", tokens);
+
+        AssistantMessage assistantMessage = new AssistantMessage(answer, properties);
         return new ChatResponse(List.of(new Generation(assistantMessage)));
     }
 }

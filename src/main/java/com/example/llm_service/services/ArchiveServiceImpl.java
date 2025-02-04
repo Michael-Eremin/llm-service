@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ArchiveServiceImpl implements ArchiveService {
     LLMActionRepository llmActionRepository;
@@ -24,9 +26,13 @@ public class ArchiveServiceImpl implements ArchiveService {
         int responseTokens = estimateTokens(response);
         int tokens = responseTokens + questionTokens;
         LLMActionEntity llmActionEntity = new LLMActionEntity();
+
         llmActionEntity.setQuestion(question);
         llmActionEntity.setResponse(response);
+        llmActionEntity.setTimestamp(LocalDateTime.now());
+        llmActionEntity.setStatusCode(statusCode);
         llmActionEntity.setTokensUsed(tokens);
+
         llmActionRepository.save(llmActionEntity);
 
     }
