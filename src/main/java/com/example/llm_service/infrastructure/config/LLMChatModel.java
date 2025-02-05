@@ -4,6 +4,8 @@ import com.example.llm_service.domain.dto.LLMChatRequest;
 import com.example.llm_service.domain.dto.LLMChatResponse;
 import com.example.llm_service.domain.dto.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ public class LLMChatModel implements ChatModel {
     private final double temperature;
     private final double topP;
     private final boolean stream;
+    private final Logger LOGGER = LoggerFactory.getLogger("LLMChatModel");
 
     public LLMChatModel(
             @Autowired RestTemplate restTemplate,
@@ -74,15 +77,15 @@ public class LLMChatModel implements ChatModel {
             e.printStackTrace();
         }
 
-        // Настройка заголовков
+        // create headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + apiKey);
 
-        // Создание HTTP-запроса
+//        create http request entity
         HttpEntity<LLMChatRequest> httpEntity = new HttpEntity<>(request, headers);
 
-        // Отправка запроса
+        // send http request entity
         ResponseEntity<LLMChatResponse> responseEntity = restTemplate.exchange(
                 baseUrl,
                 HttpMethod.POST,
@@ -90,14 +93,20 @@ public class LLMChatModel implements ChatModel {
                 LLMChatResponse.class
         );
 
-        // Обработка ответа
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+        // convert response to chatResponse
+        HttpStatusCode httpStatusCode = responseEntity.getStatusCode();
+        Integer statusCode = responseEntity.getStatusCodeValue();
+        if (httpStatusCode.is2xxSuccessful()) {
             LLMChatResponse response = responseEntity.getBody();
-            return toChatResponse(response);
+
+            ChatResponse chatResponse = toChatResponse(response, statusCode);
+
+            return chatResponse;
         } else {
             throw new RuntimeException("API Error: " + responseEntity.getStatusCode() + " - " + responseEntity.getBody());
         }
     }
+
 
     private LLMChatRequest toLLMRequest(Prompt prompt) {
         LLMChatRequest request = new LLMChatRequest();
@@ -130,11 +139,12 @@ public class LLMChatModel implements ChatModel {
     }
 
 
-    private ChatResponse toChatResponse(LLMChatResponse response) {
+    private ChatResponse toChatResponse(LLMChatResponse response, Integer statusCode) {
         String answer = response.getChoices().get(0).getMessage().getContent();
         Map<String, Object> properties = new HashMap<>();
         Integer tokens = response.getUsage().getTotal_tokens();
         properties.put("tokens", tokens);
+        properties.put("statusCode", statusCode);
 
         AssistantMessage assistantMessage = new AssistantMessage(answer, properties);
         return new ChatResponse(List.of(new Generation(assistantMessage)));

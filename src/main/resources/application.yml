@@ -1,7 +1,9 @@
 spring:
-#  data:
-#    mongodb:
-#      uri: mongodb://localhost:27017/llm-db # ????????? URI MongoDB
+  data:
+    mongodb:
+      uri: ${MONGO_DB_URI}
+
+
   ai:
     llm:
       base-url: ${BASE_URL}
@@ -11,6 +13,7 @@ spring:
       temperature: ${TEMPERATURE}
       top-p: ${TOP_P}
       stream: ${STREAM}
+
 
 
 

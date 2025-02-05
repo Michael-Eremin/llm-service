@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 
 public interface ArchiveService {
-    void saveArchive(String question, String response);
+    void saveArchive(String question, String response, Integer tokens, Integer statusCode);
 }

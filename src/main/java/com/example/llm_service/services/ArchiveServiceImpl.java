@@ -20,11 +20,9 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public void saveArchive(String question, String response){
+    public void saveArchive(String question, String response, Integer tokens, Integer statusCode){
 
-        int questionTokens = estimateTokens(question);
-        int responseTokens = estimateTokens(response);
-        int tokens = responseTokens + questionTokens;
+
         LLMActionEntity llmActionEntity = new LLMActionEntity();
 
         llmActionEntity.setQuestion(question);
@@ -33,13 +31,9 @@ public class ArchiveServiceImpl implements ArchiveService {
         llmActionEntity.setStatusCode(statusCode);
         llmActionEntity.setTokensUsed(tokens);
 
-        llmActionRepository.save(llmActionEntity);
+        LLMActionEntity llmAction  = llmActionRepository.save(llmActionEntity);
+        LOGGER.info(llmAction.toString());
 
     }
 
-    private int estimateTokens(String text) {
-        int chars = text.length();
-        int words = text.split("\\s+").length;
-        return (int) Math.ceil((chars / 4.0 + words * 0.75) / 2);
-    }
 }
