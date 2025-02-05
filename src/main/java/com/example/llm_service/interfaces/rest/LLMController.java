@@ -1,6 +1,7 @@
 package com.example.llm_service.interfaces.rest;
 
 
+import com.example.llm_service.services.LLMService;
 import com.example.llm_service.services.LLMServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,10 +19,10 @@ public class LLMController {
     private static final Logger logger = LoggerFactory.getLogger(LLMController.class);
 
 
-    private final LLMServiceImpl llmServiceImpl;
+    private final LLMService llmService;
 
-    public LLMController(LLMServiceImpl llmServiceImpl) {
-        this.llmServiceImpl = llmServiceImpl;
+    public LLMController(LLMService llmService) {
+        this.llmService = llmService;
     }
 
     @Operation(summary = "Получить ответ от LLM", description = "Отправляет запрос языковой модели")
@@ -29,39 +30,10 @@ public class LLMController {
     public String askQuestion(@RequestBody String question) {
 
         logger.info("question : {}", question);
-        return llmServiceImpl.askQuestion(question);
+        return llmService.askQuestion(question);
 
     }
 
 
 }
 
-
-//    private final LLMService llmService;
-////    private final AnswerRepository answerRepository;
-//
-//    public LLMController(
-//            LLMService llmService
-////            ,
-////            AnswerRepository answerRepository
-//    ) {
-//        this.llmService = llmService;
-////        this.answerRepository = answerRepository;
-//
-//    }
-//
-//    @Operation(summary = "Get completion from LLM")
-//    @PostMapping("/completion")
-//    public AnswerEntity getCompletion(@RequestBody String question){
-//
-//        String response = llmService.askQuestion(question);
-//
-//        AnswerEntity answer = new AnswerEntity();
-//        answer.setQuestion(question);
-//        answer.setResponse(response);
-//
-////        return answerRepository.save(answer);
-//        return answer;
-//    }
-
-//}

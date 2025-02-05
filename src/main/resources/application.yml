@@ -1,7 +1,9 @@
 spring:
-#  data:
-#    mongodb:
-#      uri: mongodb://localhost:27017/llm-db # ????????? URI MongoDB
+  data:
+    mongodb:
+      uri: ${MONGO_DB_URI}
+
+
   ai:
     llm:
       base-url: ${BASE_URL}
@@ -14,6 +16,7 @@ spring:
 
 
 
+
 server:
   port: ${PORT}
 
@@ -22,3 +25,8 @@ management:
     web:
       exposure:
         include: "*"
+
+feature:
+  save-to-mongodb-enabled: true
+
+
